@@ -1,0 +1,84 @@
+---
+title: 'Activity #10'
+author: "Zachary Davis"
+date: "2023-11-08 Originally, modified on 2023-11-29"
+output:
+  html_document: default
+---
+
+## Part 1: Collatz Conjecture
+
+The Collatz Conjecture is a function that poses the question if repeating two arithmetic operations set up via a piece-wise function, will transform any positive integer into the number 1.
+
+As we know, the distribution of stopping numbers appears as exponential if we were to graph them based on the first 10,000 integers. As the positive integer increases, the amount of the steps in the Collatz Conjecture will increase exponetially, as it works larger numbers down to 1.
+
+
+## Part 2: Diamonds
+
+```{r loadPackages}
+#Load packages with groundhog to improve stability
+library("groundhog")
+pkgs <- c("dplyr", "knitr", "kableExtra", "psych", "ggplot2", "tinytex")
+groundhog.library(pkgs, '2023-11-08') #Use the date that you started the project here
+```
+
+Load Proper Packages for visualizations of tables and plots:
+```{r, warning = FALSE, message = FALSE}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(psych)
+library(ggplot2)
+library(tinytex)
+```
+
+
+Load Diamonds Dataset, as well as create visualizations
+```{r}
+data("diamonds", package = "ggplot2") #Loads data set "diamonds"
+
+ggplot(diamonds, aes(carat, price, color = cut)) + geom_point() #Creates scatter plot of carat vs. price with cut as color
+
+sumTable1 <- diamonds %>% #Creates basic data table of data set "diamonds"
+  group_by(cut) %>%
+  summarize(
+    count = n(),
+    minimum = min(x, na.rm = TRUE),
+    firstQuin = quantile(x, probs = 0.2, na.rm = TRUE),
+    secondQuin = quantile(x, probs = 0.4, na.rm = TRUE),
+    median = median(x, na.rm = TRUE),
+    thirdQuin = quantile(x, probs = 0.6, na.rm = TRUE),
+    fourthQin = quantile(x, probs = 0.8, na.rm = TRUE),
+    max = max(x, na.rm = TRUE),
+    SAM = mean(x, na.rm = TRUE),
+    SASD = sd(x, na.rm = TRUE)
+  )
+
+sumTable1 %>% #Produces table in a more viewer-friendly way (Freshens up table)
+  kable(
+    digits = 2,
+    format.args = list(big.mark = ","),
+    caption = "Summary Statistics for Diamond length (mm)",
+    col.names = c("Cut", "Count", "Minimum", "20%-tile", "40%-tile", "Median",
+                  "60%-tile", "80%-tile", "Max", "SAM", "SASD"),
+    align = c("l", rep("c", 10)),
+    booktabs = TRUE
+  ) %>%
+  kableExtra::kable_classic()
+```
+
+Based on the table as well as the plot produced above, we can see that in general, regardless of cut, the price of diamonds will increase as the carat value increases. Furthermore, when applying the variable cut as well, we can see that as the cut quality increases or gets better, the price of a diamond will increase. We can make this inference because the yellow dots (Ideal cut) are generally more expensive than the purple dots (Fair cut) regardless of the amount of carats. The table shows us that majority of the diamonds are Ideally cut, however they tend to have lower carat values, meaning their average price is lower than those of Fair cut.
+
+
+## Part 3: What I have learned so far
+
+So far in this course, I have been able to learn the basics of R, how to create clear and clean code within R, and have learned some of the huge capabilites this software holds. Personally, I really found learning how to create tables and change the aesthetic of them to be very interesting and helpful, as well as the massive capabilities of what ggplot2 has to offer. Ggplot2 so far is my favorite thing I have learned in this course because it helps me create graphics that clearly convey the data I want to show and will help me in the future. Also, I am now learning how to use Rmarkdown correctly, which I believe can be very helpful if I need to use R during the course of my career in college and life.
+
+\newpage
+# Code Appendix
+``` {r codeAppedix}
+ref.label = knitr::all_labels()
+echo = TRUE
+eval = FALSE
+```
+
